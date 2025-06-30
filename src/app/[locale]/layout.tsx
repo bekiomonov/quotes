@@ -5,6 +5,9 @@ import { hasLocale, Locale } from 'next-intl'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { Providers } from './providers'
+import { Suspense } from 'react'
+import { Loader } from '@/components/core'
+import { MainNav } from '@/components/ui'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -36,20 +39,39 @@ export default async function RootLayout({
   params: Promise<{ locale: Locale }>
 }>) {
   const { locale } = await params
-  console.log('locale', locale)
   if (!hasLocale(routing.locales, locale)) {
     notFound()
   }
+
   return (
     <html suppressHydrationWarning lang={locale}>
       <head />
-      <Providers locale={locale}>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Providers
+          locale={locale}
+          userInfo={null}
+          themeProps={{
+            attribute: 'class',
+            defaultTheme: 'system',
+            enableSystem: true,
+            disableTransitionOnChange: false,
+          }}
         >
-          {children}
-        </body>
-      </Providers>
+          <Suspense
+            fallback={
+              <div className='flex min-h-dvh items-center justify-center'>
+                <Loader size='lg' />
+              </div>
+            }
+          >
+            <div className='grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-4 pb-20 gap-16 sm:p-10 font-[family-name:var(--font-geist-sans)]'>
+              <MainNav />
+              {children}
+              <footer className='row-start-3 flex gap-[24px] flex-wrap items-center justify-center'></footer>
+            </div>
+          </Suspense>
+        </Providers>
+      </body>
     </html>
   )
 }

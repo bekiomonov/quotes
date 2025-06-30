@@ -1,6 +1,9 @@
 export interface SessionData {
   userId: string
+  id: string
+  username: string
 }
+
 export interface StorageAdapter {
   getItem<T>(key: string): T | null
   setItem<T>(key: string, value: T): void
@@ -14,39 +17,52 @@ export interface StorageAdapter {
 
 export class LocalStorageAdapter implements StorageAdapter {
   #sessionKey = 'active_session'
+  #isBrowser = false
 
-  getItem<T>(key: string): T | null {
-    try {
-      const item = localStorage.getItem(key)
-      return item ? (JSON.parse(item) as T) : null
-    } catch (error) {
-      console.error(`Error reading localStorage key "${key}": `, error)
-      return null
+  constructor() {
+    if (typeof window !== 'undefined') {
+      this.#isBrowser = true
     }
   }
+
+  getItem<T>(key: string): T | null {
+    if (this.#isBrowser) {
+      try {
+        const item = localStorage.getItem(key)
+        return item ? (JSON.parse(item) as T) : null
+      } catch (error) {
+        console.error(`Error reading localStorage key "${key}": `, error)
+        return null
+      }
+    }
+    return null
+  }
+
   setItem<T>(key: string, value: T): void {
     try {
-      localStorage.setItem(key, JSON.stringify(value))
+      this.#isBrowser && localStorage.setItem(key, JSON.stringify(value))
     } catch (error) {
       console.error(`Error writing to localStorage key "${key}": `, error)
     }
   }
   removeItem(key: string): void {
     try {
-      localStorage.removeItem(key)
+      this.#isBrowser && localStorage.removeItem(key)
     } catch (error) {
       console.error(`Error removing localStorage key "${key}": `, error)
     }
   }
   clear(): void {
     try {
-      localStorage.clear()
+      this.#isBrowser && localStorage.clear()
     } catch (error) {
       console.error('Error clearing localStorage', error)
     }
   }
-  setActiveSession(session: SessionData): void {
+
+  setActiveSession(session: SessionData) {
     this.setItem(this.#sessionKey, session)
+    return this.getActiveSession()!
   }
   getActiveSession(): SessionData | null {
     return this.getItem<SessionData>(this.#sessionKey)

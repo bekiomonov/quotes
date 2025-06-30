@@ -23,9 +23,24 @@
       "@types": ["./types/index.ts"],
       "@assets/*": ["./src/assets/*"],
       "@styles": ["./src/styles/globals.css"],
-      "@public/*": ["./public/*"]
+      "@public/*": ["./public/*"],
+      "@components/core": ["./src/components/core/index.ts"],
+      "@api": ["./src/api/index.ts"],
+      "@utils": ["./src/lib/utils.ts"],
+      "@hooks": ["./src/hooks/index.ts"],
+      "@lib/*": ["./src/lib/*"],
+      "@schema": ["./src/schema/index.ts"],
+      "@context": ["./src/context/index.ts"],
+      "@components/ui": ["./src/components/ui/index.ts"],
+      "@service/*": ["./src/service/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "**/*.css"
+  ],
   "exclude": ["node_modules"]
 }
