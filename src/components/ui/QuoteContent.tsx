@@ -1,7 +1,6 @@
 'use client'
 
-import { getPromises } from '@/app/[locale]/page'
-import { cn } from '@/lib/utils'
+import { dummyjsonApi, DummyJsonQuote, realinspireApi, RealinspireQuote } from '@api'
 import {
   Button,
   Card,
@@ -20,11 +19,53 @@ import {
 } from '@components/core'
 import { useConnectionStatus, useSignal } from '@hooks'
 import { quoteStorage } from '@lib/quoteStorage'
+import { cn } from '@lib/utils'
 import { Quote } from '@schema'
 import Autoplay from 'embla-carousel-autoplay'
 import { HeartIcon, ZapIcon } from 'lucide-react'
+import { nanoid } from 'nanoid'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { SignalConsumer } from './SignalConsumer'
+
+function getPromises() {
+  const controllers: AbortController[] = []
+
+  return {
+    promises: [
+      dummyjsonApi
+        .get<DummyJsonQuote>('/random', {
+          init: {},
+          beforeRequest: (controller) => {
+            controllers.push(controller)
+          },
+        })
+        .then((res) => ({
+          author: res.author,
+          content: res.quote,
+          id: nanoid(),
+          source: 'https://dummyjson.com/quotes/random',
+          rating: 0,
+          isFavorite: false,
+        })),
+      realinspireApi
+        .get<RealinspireQuote>('/random', {
+          init: {},
+          beforeRequest: (controller) => {
+            controllers.push(controller)
+          },
+        })
+        .then((res) => ({
+          author: res[0].author,
+          content: res[0].content,
+          id: Buffer.from(res[0].content, 'utf8').toString('base64'),
+          source: 'https://api.realinspire.live/v1/quotes/random',
+          rating: 0,
+          isFavorite: false,
+        })),
+    ],
+    controllers,
+  }
+}
 
 export function QuoteContent() {
   const signal = useSignal<(Quote & { fromCache: boolean })[]>([])

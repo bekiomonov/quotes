@@ -1,2 +1,2 @@
 export * from './dummyjsonApi'
-export * from './zenQuoteApi'
+export * from './realinspireApi'

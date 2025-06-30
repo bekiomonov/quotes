@@ -1,6 +1,6 @@
 import { ApiInstance } from '@/lib/utils'
 
-export type ZenQuote = {
+export type RealinspireQuote = {
   /** Quote text */
   content: string
   /**author name */
@@ -9,4 +9,4 @@ export type ZenQuote = {
   authorSlug: string
 }[]
 
-export const zenQuotesApi = new ApiInstance('https://api.realinspire.live/v1/quotes')
+export const realinspireApi = new ApiInstance('https://api.realinspire.live/v1/quotes')
