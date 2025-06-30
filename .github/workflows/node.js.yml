@@ -20,17 +20,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
 
-      - name: Run install
-        uses: yarn
-        with:
-          cmd: install
+      # Step 3: Install specific Yarn version globally
+      - name: Install specific Yarn version
+        run: npm install -g yarn@1.22.19 # replace with your desired version
 
-      - name: Test the app
-        uses: yarn
-        with:
-          cmd: test
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: yarn install
 
-      - name: Build the app
-        uses: yarn
-        with:
-          cmd: build
+      - name: Test
+        run: yarn test
+
+      # Step 5: Build your app
+      - name: Build app
+        run: yarn build
