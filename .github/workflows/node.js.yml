@@ -21,10 +21,16 @@ jobs:
           cache: 'yarn'
 
       - name: Run install
-        run: yarn install
+        uses: yarn
+        with:
+          cmd: install
 
       - name: Test the app
-        run: yarn test
+        uses: yarn
+        with:
+          cmd: test
 
       - name: Build the app
-      - run: yarn run build
+        uses: yarn
+        with:
+          cmd: build
