@@ -1,13 +1,13 @@
-import '@styles'
-import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import { hasLocale, Locale } from 'next-intl'
-import { notFound } from 'next/navigation'
-import { routing } from '@/i18n/routing'
-import { Providers } from './providers'
-import { Suspense } from 'react'
 import { Loader } from '@/components/core'
 import { MainNav } from '@/components/ui'
+import { routing } from '@/i18n/routing'
+import '@styles'
+import type { Metadata, Viewport } from 'next'
+import { hasLocale, Locale } from 'next-intl'
+import { Geist, Geist_Mono } from 'next/font/google'
+import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
+import { Providers } from './providers'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

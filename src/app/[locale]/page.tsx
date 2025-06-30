@@ -45,7 +45,7 @@ export function getPromises() {
 
 export default async function Home() {
   return (
-    <main className='flex items-center justify-center w-full'>
+    <main data-testid='main' className='flex items-center justify-center w-full'>
       <QuoteContent />
     </main>
   )

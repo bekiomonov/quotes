@@ -7,14 +7,7 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 
 type Json = any
 
-export type HTTPMethod =
-  | 'GET'
-  | 'POST'
-  | 'PUT'
-  | 'PATCH'
-  | 'DELETE'
-  | 'OPTIONS'
-  | 'HEAD'
+export type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS' | 'HEAD'
 export type HTTPHeaders = { [key: string]: string }
 export type HTTPQuery = {
   [key: string]:

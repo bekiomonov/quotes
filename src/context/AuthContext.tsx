@@ -1,10 +1,10 @@
 'use client'
 
-import { UserInfo } from '@schema'
-import React, { PropsWithChildren, createContext, useContext, useState } from 'react'
-import { nanoid } from 'nanoid'
 import { useLatest } from '@hooks'
 import { storage } from '@lib/localStorage'
+import { UserInfo } from '@schema'
+import { nanoid } from 'nanoid'
+import React, { PropsWithChildren, createContext, useContext, useState } from 'react'
 
 export const authContext = createContext<UserInfo | null>(null)
 

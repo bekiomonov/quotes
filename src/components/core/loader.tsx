@@ -17,10 +17,7 @@ export function Loader({ size = 'sm', className }: LoaderProps) {
     <div className='inline-flex items-center justify-center'>
       <svg
         fill='none'
-        className={cn(
-          'animate-spin text-[--neutral-container-default]',
-          className
-        )}
+        className={cn('animate-spin text-[--neutral-container-default]', className)}
         viewBox='0 0 64 64'
         width={dimension}
         height={dimension}

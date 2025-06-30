@@ -1,7 +1,8 @@
-import { useAuth } from '@context'
 import { Link } from '@/i18n/navigation'
-import { Avatar, AvatarFallback, AvatarImage, Button } from '@components/core'
 import {
+  Avatar,
+  AvatarImage,
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -11,6 +12,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@components/core'
+import { useAuth } from '@context'
 
 export function ProfileDropdown() {
   const authInfo = useAuth()

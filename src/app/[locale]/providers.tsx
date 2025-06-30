@@ -2,11 +2,11 @@
 
 import type { ThemeProviderProps } from 'next-themes'
 
-import * as React from 'react'
-import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import { Locale, NextIntlClientProvider } from 'next-intl'
-import { AuthProvider } from '@context'
 import { UserInfo } from '@/schema'
+import { AuthProvider } from '@context'
+import { Locale, NextIntlClientProvider } from 'next-intl'
+import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import * as React from 'react'
 
 export interface ProvidersProps {
   children: React.ReactNode

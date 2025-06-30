@@ -1,9 +1,9 @@
 'use client'
+import { cn } from '@/lib/utils'
 import { useControllableState } from '@radix-ui/react-use-controllable-state'
 import { type LucideProps, StarIcon } from 'lucide-react'
 import type { KeyboardEvent, MouseEvent, ReactElement, ReactNode } from 'react'
 import { Children, cloneElement, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { cn } from '@/lib/utils'
 type RatingContextValue = {
   value: number
   readOnly: boolean
