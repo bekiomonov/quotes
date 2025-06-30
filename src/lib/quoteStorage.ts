@@ -15,6 +15,7 @@ export class QuoteStorage extends LocalStorageAdapter {
     } else {
       const quotes = this.getItem<Quote[]>('quotes')
       if (Array.isArray(quotes)) {
+        console.log('quotes', quotes)
         quotes.forEach((item) => {
           this.quotesMap[item.id] = item
         })

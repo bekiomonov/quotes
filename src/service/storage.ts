@@ -2,6 +2,7 @@ export interface SessionData {
   userId: string
   id: string
   username: string
+  favorites: (number | string)[]
 }
 
 export interface StorageAdapter {

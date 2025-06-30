@@ -4,6 +4,7 @@ import { render } from '@testing-library/react'
 import { expect, vi } from 'vitest'
 import { withProviders } from './utils/withProviders'
 
+// mock matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation((query) => ({

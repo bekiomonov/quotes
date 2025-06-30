@@ -1,25 +1,34 @@
 'use client'
 
-import { useLatest } from '@hooks'
 import { storage } from '@lib/localStorage'
 import { UserInfo } from '@schema'
 import { nanoid } from 'nanoid'
-import React, { PropsWithChildren, createContext, useContext, useState } from 'react'
+import React, { PropsWithChildren, createContext, useCallback, useContext, useState } from 'react'
 
 export const authContext = createContext<UserInfo | null>(null)
 
-export const authUpdaterContext = createContext<(value: UserInfo | null) => void>(() => {})
+export const authUpdaterContext = createContext<((value: UserInfo | null) => void) | null>(null)
 
 type Props = {
   userInfo: UserInfo | null
 } & PropsWithChildren
 
 export const AuthProvider = ({ children, userInfo }: Props) => {
-  const [state, setState] = useState<UserInfo | null>(userInfo)
-
-  const setUserInfo = useLatest((value: UserInfo | null) => {
-    setState(value)
+  const [state, setState] = useState<UserInfo | null>(() => {
+    if (userInfo) {
+      storage.setActiveSession({
+        favorites: userInfo.favorites,
+        id: userInfo.sessionId,
+        userId: userInfo.id,
+        username: userInfo.name,
+      })
+    }
+    return userInfo
   })
+
+  const setUserInfo = useCallback((value: UserInfo | null) => {
+    setState(value)
+  }, [])
 
   React.useEffect(() => {
     const session =
@@ -28,8 +37,9 @@ export const AuthProvider = ({ children, userInfo }: Props) => {
         id: nanoid(),
         userId: nanoid(),
         username: 'Elof Max',
+        favorites: [],
       })
-    setUserInfo.current({
+    setUserInfo({
       id: session.userId,
       name: session.username,
       sessionId: session.id,
@@ -39,7 +49,7 @@ export const AuthProvider = ({ children, userInfo }: Props) => {
 
   return (
     <authContext.Provider value={state}>
-      <authUpdaterContext.Provider value={setUserInfo.current}>{children}</authUpdaterContext.Provider>
+      <authUpdaterContext.Provider value={setUserInfo}>{children}</authUpdaterContext.Provider>
     </authContext.Provider>
   )
 }
@@ -54,6 +64,7 @@ export const useAuth = () => {
 
 export const useAuthUpdater = () => {
   const updater = useContext(authUpdaterContext)
+
   if (typeof updater === 'undefined') {
     throw new Error('authUpdaterContext must be used within a AuthUpdaterProvider')
   }
