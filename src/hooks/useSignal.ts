@@ -2,6 +2,7 @@ import { useLatest } from '@hooks'
 import { createSignal } from '@lib/createSignal'
 import { useEffect, useMemo, useState } from 'react'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isFunction = (arg: any): arg is (arg: any) => any => typeof arg === 'function'
 
 export type Subscriber<T> = (value: T) => void

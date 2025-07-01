@@ -28,6 +28,7 @@ export const getCookies = async <T extends string | string[] | void = undefined,
   }
   if (typeof name === 'string') {
     const cookie = await cookies()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return asString ? (`${cookie.get(name)?.name}=${cookie.get(name)?.value}` as any) : (cookie.get(name) as any)
   } else if (Array.isArray(name)) {
     const cookie = await cookies()
@@ -36,15 +37,19 @@ export const getCookies = async <T extends string | string[] | void = undefined,
           .getAll()
           .filter((cookie) => name.includes(cookie.name))
           .map(({ name, value }) => `${name}=${value}`)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .join('; ') as any)
-      : (cookie.getAll().filter((cookie) => name.includes(cookie.name)) as any)
+      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (cookie.getAll().filter((cookie) => name.includes(cookie.name)) as any)
   } else {
     const cookie = await cookies()
     return asString
       ? (cookie
           .getAll()
           ?.map(({ name, value }) => `${name}=${value}`)
-          .join('; ') as any)
-      : (cookie.getAll()?.map(({ name, value }) => `${name}=${value}`) as any)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .join('; ') as unknown as any)
+      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (cookie.getAll()?.map(({ name, value }) => `${name}=${value}`) as any)
   }
 }

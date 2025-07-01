@@ -12,7 +12,7 @@ export function getRandomInt(min: number, max: number) {
 }
 
 export class ResponseError extends Error {
-  override name: 'ResponseError' = 'ResponseError'
+  override name = 'ResponseError' as const
   constructor(
     public response: Response,
     msg?: string
@@ -22,7 +22,7 @@ export class ResponseError extends Error {
 }
 
 export class FetchError extends Error {
-  override name: 'FetchError' = 'FetchError'
+  override name = 'FetchError' as const
   constructor(
     public cause: Error,
     msg?: string
@@ -32,7 +32,7 @@ export class FetchError extends Error {
 }
 
 export class RequiredError extends Error {
-  override name: 'RequiredError' = 'RequiredError'
+  override name = 'RequiredError' as const
   constructor(
     public field: string,
     msg?: string
@@ -66,7 +66,9 @@ export class ApiInstance {
       ...init,
     })
     if (response && response.status >= 200 && response.status < 300) {
-      init?.onFulfilled && init.onFulfilled(response)
+      if (init?.onFulfilled) {
+        init.onFulfilled(response)
+      }
       return response
     }
     throw new ResponseError(response, 'Response returned an error code')
@@ -97,7 +99,9 @@ export class ApiInstance {
     }
   ) {
     const controller = new AbortController()
-    config?.beforeRequest && config.beforeRequest(controller)
+    if (config?.beforeRequest) {
+      config.beforeRequest(controller)
+    }
     let response: Response | undefined = undefined
 
     if (typeof input === 'string') {
@@ -132,7 +136,9 @@ export class ApiInstance {
     const controller = new AbortController()
     let response: Response | undefined = undefined
 
-    config?.beforeRequest && config.beforeRequest(controller)
+    if (config?.beforeRequest) {
+      config.beforeRequest(controller)
+    }
 
     if (typeof input === 'string') {
       response = await this.#request(

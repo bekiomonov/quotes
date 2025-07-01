@@ -12,7 +12,9 @@ export const createSignal = <T>(
     if (callback) {
       const produced = produce(target.getValue(), callback)
       target.value = produced
-      onUpdate && onUpdate({ target, newValue: produced })
+      if (onUpdate) {
+        onUpdate({ target, newValue: produced })
+      }
       Object.keys(subscribers).forEach((key) => {
         const subscriber = subscribers[key]
         subscriber(target.getValue())
@@ -52,7 +54,9 @@ export const createSignal = <T>(
       if (key === 'value' || key === 'subscribe' || key === 'unsubscribe') return target[key]
     },
     set(target, key, newValue: T) {
-      onUpdate && onUpdate({ target, key, newValue })
+      if (onUpdate) {
+        onUpdate({ target, key, newValue })
+      }
       if (key !== 'value') return true
       if (typeof newValue !== 'function' && Object.is(target[key], newValue)) return true
 

@@ -41,21 +41,27 @@ export class LocalStorageAdapter implements StorageAdapter {
 
   setItem<T>(key: string, value: T): void {
     try {
-      this.#isBrowser && localStorage.setItem(key, JSON.stringify(value))
+      if (this.#isBrowser) {
+        localStorage.setItem(key, JSON.stringify(value))
+      }
     } catch (error) {
       console.error(`Error writing to localStorage key "${key}": `, error)
     }
   }
   removeItem(key: string): void {
     try {
-      this.#isBrowser && localStorage.removeItem(key)
+      if (this.#isBrowser) {
+        localStorage.removeItem(key)
+      }
     } catch (error) {
       console.error(`Error removing localStorage key "${key}": `, error)
     }
   }
   clear(): void {
     try {
-      this.#isBrowser && localStorage.clear()
+      if (this.#isBrowser) {
+        localStorage.clear()
+      }
     } catch (error) {
       console.error('Error clearing localStorage', error)
     }

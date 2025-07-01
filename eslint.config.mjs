@@ -11,11 +11,12 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.config({
+    plugins: ['@stylistic', 'prettier'],
     extends: ['next', 'prettier', 'next/core-web-vitals', 'next/typescript'],
     rules: {
       quotes: ['error', 'single'],
       semi: ['error', 'never'],
-      'react/jsx-quotes': ['error', 'prefer-single'],
+      // '@stylistic/eslint-plugin': ['error', 'prefer-single'],
       'prettier/prettier': [
         'error',
         {

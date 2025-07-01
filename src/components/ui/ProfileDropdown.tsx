@@ -16,11 +16,6 @@ import { useAuth } from '@context'
 
 export function ProfileDropdown() {
   const authInfo = useAuth()
-  const initials =
-    authInfo?.name
-      ?.split(' ')
-      ?.map((str) => str[0].toUpperCase())
-      ?.join('') || ''
 
   return (
     <DropdownMenu>
