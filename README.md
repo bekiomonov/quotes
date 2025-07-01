@@ -34,7 +34,7 @@ A modern quote app that fetches and displays inspiring quotes in a beautiful, au
 ## 📦 Installation
 
 ```bash
-git clone https://github.com/yourusername/quotes.git
+git clone https://github.com/bekiomonov/quotes.git
 cd quotes
 yarn install
 ```
