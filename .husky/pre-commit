@@ -8,4 +8,5 @@ export NVM_DIR="$HOME/.nvm"
 nvm use 20 >/dev/null
 
 yarn test
+yarn lint
 yarn format
