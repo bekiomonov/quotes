@@ -1,15 +1,9 @@
 import type { TestingLibraryMatchers } from '@testing-library/jest-dom/matchers'
 import * as matchers from '@testing-library/jest-dom/matchers'
-import { cleanup } from '@testing-library/react'
-import { afterEach, expect } from 'vitest'
+import { expect } from 'vitest'
 
 // Extend Vitest's expect with jest-dom matchers
 expect.extend(matchers)
-
-// Clean up after each test case
-afterEach(() => {
-  cleanup()
-})
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {

@@ -1,3 +1,5 @@
 {
-  "hello": "Hello"
+  "hello": "Hello",
+  "myAccount": "My account",
+  "favorites": "Favorites"
 }

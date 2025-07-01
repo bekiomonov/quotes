@@ -29,10 +29,6 @@ vi.mock('@lib/localStorage', () => ({
     setActiveSession: vi.fn(),
   },
 }))
-// vi.mock('@context', () => ({
-//   useAuth: vi.fn(),
-//   useAuthUpdater: vi.fn(),
-// }))
 
 vi.mock('nanoid', () => ({
   nanoid: vi.fn(() => 'mock-nanoid-id'),

@@ -21,7 +21,7 @@ import { useConnectionStatus, useSignal } from '@hooks'
 import { quoteStorage } from '@lib/quoteStorage'
 import { cn } from '@lib/utils'
 import { Quote } from '@schema'
-import Autoplay from 'embla-carousel-autoplay'
+import AutoplayPlugin from 'embla-carousel-autoplay'
 import { HeartIcon, ZapIcon } from 'lucide-react'
 import { nanoid } from 'nanoid'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -43,7 +43,7 @@ function getPromises() {
           author: res.author,
           content: res.quote,
           id: nanoid(),
-          source: 'https://dummyjson.com/quotes/random',
+          source: process.env.NEXT_PUBLIC_DUMMYJSON_API!,
           rating: 0,
           isFavorite: false,
         })),
@@ -58,7 +58,7 @@ function getPromises() {
           author: res[0].author,
           content: res[0].content,
           id: Buffer.from(res[0].content, 'utf8').toString('base64'),
-          source: 'https://api.realinspire.live/v1/quotes/random',
+          source: process.env.NEXT_PUBLIC_REALINSPIRE_API!,
           rating: 0,
           isFavorite: false,
         })),
@@ -74,45 +74,32 @@ export function QuoteContent() {
   const isOnline = useConnectionStatus()
   const quoteIdMap = useRef<Record<number | string, boolean>>({})
   const [emblaApi, setEmblaApi] = useState<CarouselApi | null>(null)
+  const autoplay = useRef(AutoplayPlugin({ stopOnMouseEnter: true }))
 
-  const autoPlayPlugin = useRef(
-    Autoplay({
-      delay: 5_000,
-      stopOnInteraction: false,
-      stopOnMouseEnter: true,
-    })
-  )
-
-  useEffect(() => {
-    fetchQuote('effect').then((res) => {
-      console.log('res', res)
-      if (res) {
-        quoteIdMap.current[res.id] = true
-        signal((draft) => {
-          draft.push({
-            author: res.author,
-            content: res.content,
-            id: res.id,
-            source: res.source,
-            fromCache: false,
-            rating: res.rating,
-            isFavorite: res.isFavorite,
-          })
-        })
-        quoteStorage.setQuote(res)
-      }
-    })
-  }, [])
-
-  async function fetchQuote(key: string) {
-    console.log(key)
-
+  async function fetchQuote() {
     const { promises, controllers } = getPromises()
 
     return await Promise.any(promises).then((res) => {
-      controllers.forEach((controller) => controller.abort('Cancelled'))
+      controllers.forEach((controller) => {
+        controller.abort()
+      })
       return res
     })
+  }
+
+  function setToState(quote: Quote, fromCache: boolean = false) {
+    signal((draft) => {
+      draft.push({
+        author: quote.author,
+        content: quote.content,
+        id: quote.id,
+        source: quote.source,
+        fromCache,
+        rating: quote.rating,
+        isFavorite: quote.isFavorite,
+      })
+    })
+    quoteStorage.setQuote(quote)
   }
 
   const slidesInView = useCallback(
@@ -124,26 +111,14 @@ export function QuoteContent() {
           if (isLast && !isFetching.current) {
             if (isOnline) {
               isFetching.current = true
-              fetchQuote('slidesInView')
+              fetchQuote()
                 .then((res) => {
                   if (quoteIdMap.current[res.id]) {
                     console.log('Already on the list: ', res.id)
-                  }
-                  if (res && !quoteIdMap.current[res.id]) {
+                  } else if (res) {
                     slidesLength.current = slidesInView[0] + 1
                     quoteIdMap.current[res.id] = true
-                    signal((draft) => {
-                      draft.push({
-                        author: res.author,
-                        content: res.content,
-                        id: res.id,
-                        source: res.source,
-                        fromCache: false,
-                        rating: res.rating,
-                        isFavorite: res.isFavorite,
-                      })
-                    })
-                    quoteStorage.setQuote(res)
+                    setToState(res)
                   }
                 })
                 .finally(() => {
@@ -154,22 +129,17 @@ export function QuoteContent() {
               if (randomQuoteFromStorage && !quoteIdMap.current[randomQuoteFromStorage.id]) {
                 slidesLength.current = slidesInView[0] + 1
                 quoteIdMap.current[randomQuoteFromStorage.id] = true
-                signal((draft) => {
-                  draft.push({
-                    author: randomQuoteFromStorage.author,
-                    content: randomQuoteFromStorage.content,
-                    id: randomQuoteFromStorage.id,
-                    source: randomQuoteFromStorage.source,
-                    fromCache: true,
-                    rating: randomQuoteFromStorage.rating,
-                    isFavorite: randomQuoteFromStorage.isFavorite,
-                  })
-                })
+                setToState(randomQuoteFromStorage, true)
               } else {
                 console.log('Already on the list: ', randomQuoteFromStorage?.id)
               }
             }
           }
+        } else if (!api.slidesInView().length && isOnline) {
+          fetchQuote().then((res) => {
+            quoteIdMap.current[res.id] = true
+            setToState(res)
+          })
         }
       }
     },
@@ -188,6 +158,7 @@ export function QuoteContent() {
   useEffect(() => {
     if (emblaApi) {
       emblaApi.on('slidesInView', slidesInView)
+      emblaApi.emit('slidesInView')
       return () => {
         emblaApi.off('slidesInView', slidesInView)
       }
@@ -216,15 +187,7 @@ export function QuoteContent() {
   }
 
   return (
-    <Carousel
-      plugins={
-        [
-          // autoPlayPlugin.current
-        ]
-      }
-      setApi={setApiCb}
-      className='w-full max-w-3xl'
-    >
+    <Carousel plugins={[autoplay.current]} setApi={setApiCb} className='w-full max-w-3xl'>
       <SignalConsumer signal={signal}>
         {({ value: slides }) => {
           return (
@@ -235,8 +198,8 @@ export function QuoteContent() {
                 </div>
               ) : null}
               <CarouselContent className={cn(!slides.length && 'sr-only')}>
-                {slides.map((item, index) => (
-                  <CarouselItem key={item.id}>
+                {slides.map((item) => (
+                  <CarouselItem key={item.id} data-testid='slide'>
                     <div className='p-1'>
                       <Card>
                         <CardHeader>
@@ -282,8 +245,13 @@ export function QuoteContent() {
               </CarouselContent>
               {slides.length ? (
                 <div className='flex gap-2 mt-3'>
-                  <CarouselPrevious />
-                  <CarouselNext />
+                  <CarouselPrevious data-testid='previous-btn' />
+                  <CarouselNext
+                    data-testid='next-btn'
+                    onScrollNext={() => {
+                      console.log('Click')
+                    }}
+                  />
                 </div>
               ) : null}
             </>

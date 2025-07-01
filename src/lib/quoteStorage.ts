@@ -1,5 +1,7 @@
 import { Quote } from '@schema'
 import { LocalStorageAdapter } from '@service/storage'
+import { produce } from 'immer'
+import { createStore } from 'zustand'
 import { getRandomInt } from './utils'
 
 export class QuoteStorage extends LocalStorageAdapter {
@@ -15,7 +17,6 @@ export class QuoteStorage extends LocalStorageAdapter {
     } else {
       const quotes = this.getItem<Quote[]>('quotes')
       if (Array.isArray(quotes)) {
-        console.log('quotes', quotes)
         quotes.forEach((item) => {
           this.quotesMap[item.id] = item
         })
@@ -102,3 +103,12 @@ export class QuoteStorage extends LocalStorageAdapter {
 }
 
 export const quoteStorage = new QuoteStorage()
+
+const useQuoteStore = createStore<{ storage: QuoteStorage }>((set) => ({
+  storage: quoteStorage,
+  setQuote: set((state) => {
+    return produce((state) => {
+      return state.storage
+    }, state)
+  }),
+}))

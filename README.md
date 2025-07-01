@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📖 Quotes Carousel App
 
-## Getting Started
+A modern quote app that fetches and displays inspiring quotes in a beautiful, autoplay-enabled slider. Quotes are fetched from multiple sources and cached locally for offline use.
 
-First, run the development server:
+---
+
+## ✨ Features
+
+- 🎡 Autoplay carousel
+- 🌐 Fetches quotes from:
+  - [https://dummyjson.com/quotes/random](https://dummyjson.com/quotes/random)
+  - [https://api.realinspire.live/quote](https://api.realinspire.live/quote)
+- 📦 Offline support with `localStorage` fallback
+- ❤️ Like and ⭐ rate quotes
+- 🗂 Favorites page with list of liked quotes
+- 🌙 Theme switching with `next-themes`
+- 🌍 Internationalization with `next-intl`
+- 🧪 Test suite using `vitest` and `@testing-library/react`
+
+---
+
+## 🛠 Tech Stack
+
+- **Framework**: Next.js (App Router)
+- **Language**: TypeScript
+- **UI**: Tailwind CSS
+- **State Management**: Zustand (coming soon ⏳)
+- **Testing**: Vitest, React Testing Library, MSW
+- **Tooling**: ESLint, Prettier, Husky, Lint-Staged
+- **Package Manager**: Yarn
+
+---
+
+## 📦 Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/quotes.git
+cd quotes
+yarn install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🧪 Testing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+yarn test          # Run all tests
+yarn test:watch    # Run tests in watch mode
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🚀 Development
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+yarn dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Then open http://localhost:3000
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🏗️ Production Build
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+yarn build
+yarn start
+```
+
+---
+
+## 🔐 Environment Variables
+
+```env
+NEXT_PUBLIC_DUMMYJSON_API=https://dummyjson.com/quotes/random
+NEXT_PUBLIC_REALINSPIRE_API=https://api.realinspire.live/v1/quotes/random
+```
+
+---
+
+## 💡 How It Works
+
+- On load, the app fetches a random quote from the two APIs, whichever comes first is displayed and another is cancelled.
+- If offline, quotes are pulled from the local cache (localStorage).
+- When the network is restored, it continues fetching from the online source.
+- Carousel supports autoplay and navigation.
+- Users can like and rate quotes.
+- Liked quotes are stored and displayed on a separate favorites page.
+
+## 🧼 Code Quality
+
+```bash
+yarn lint       # Lint with ESLint
+yarn format     # Format with Prettier
+```
+
+> Pre-commit hooks are configured via husky and lint-staged.

@@ -55,7 +55,7 @@ export class ApiInstance {
     }
   }
 
-  async #request(ctx: RequestOpts, init?: RequestInit) {
+  async #request(ctx: RequestOpts, init?: RequestInit & { onFulfilled?: <T>(response: T) => void }) {
     let queryParams: string | undefined
     if (ctx.query) {
       queryParams = `?${qs.stringify(ctx.query, ctx.stringifyOptions)}`
@@ -66,6 +66,7 @@ export class ApiInstance {
       ...init,
     })
     if (response && response.status >= 200 && response.status < 300) {
+      init?.onFulfilled && init.onFulfilled(response)
       return response
     }
     throw new ResponseError(response, 'Response returned an error code')
@@ -125,6 +126,7 @@ export class ApiInstance {
       query?: HTTPQuery
       init?: RequestInit
       beforeRequest?: (controller: AbortController) => void
+      onFulfilled?: <T>(response: T) => void
     }
   ) {
     const controller = new AbortController()
@@ -139,7 +141,11 @@ export class ApiInstance {
           method: 'GET',
           query: config?.query,
         },
-        { ...(config?.init && config.init), signal: controller.signal }
+        {
+          ...(config?.init && config.init),
+          ...(config?.onFulfilled && { onFulfilled: config.onFulfilled }),
+          signal: controller.signal,
+        }
       )
     } else {
       response = await this.#request(

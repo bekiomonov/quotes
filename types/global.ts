@@ -1,5 +1,6 @@
 import { formats } from '@/i18n/request'
 import { routing } from '@/i18n/routing'
+
 import messages from '@assets/messages/en.json'
 
 declare module 'next-intl' {
@@ -9,3 +10,5 @@ declare module 'next-intl' {
     Formats: typeof formats
   }
 }
+
+/// <reference types="@vitest/browser/context" />

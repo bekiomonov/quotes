@@ -1,10 +1,12 @@
 'use client'
 
-import { Card, CardContent, CardFooter, Rating, RatingButton } from '@/components/core'
+import { Button, Card, CardContent, CardFooter, CardHeader, Rating, RatingButton } from '@/components/core'
 import { SignalConsumer } from '@/components/ui'
 import { useSignal } from '@/hooks'
 import { quoteStorage } from '@/lib/quoteStorage'
+import { cn } from '@/lib/utils'
 import { Quote } from '@schema'
+import { HeartIcon } from 'lucide-react'
 import { useEffect } from 'react'
 
 export default function Favorites() {
@@ -25,6 +27,16 @@ export default function Favorites() {
     })
   }
 
+  function toggleQuoteLike(id: string | number, value: boolean) {
+    quoteStorage.updateLike(id, value)
+    quotesSignal((draft) => {
+      const index = draft.findIndex((it) => it.id === id)
+      if (index > -1) {
+        draft[index].isFavorite = value
+      }
+    })
+  }
+
   return (
     <div>
       <ul className='flex flex-col gap-6'>
@@ -36,6 +48,17 @@ export default function Favorites() {
               state.map((item) => (
                 <li key={item.id}>
                   <Card>
+                    <CardHeader className='flex'>
+                      <Button
+                        variant='ghost'
+                        className='text-muted-foreground ml-auto cursor-pointer'
+                        onClick={() => {
+                          toggleQuoteLike(item.id, !item.isFavorite)
+                        }}
+                      >
+                        <HeartIcon className={cn('size-4', item.isFavorite && 'fill-current')} />
+                      </Button>
+                    </CardHeader>
                     <CardContent className='flex items-center justify-center p-6'>
                       <div className='space-y-2.5 w-full'>
                         <blockquote className='mt-6 border-l-2 pl-6 italic'>{item.content}</blockquote>

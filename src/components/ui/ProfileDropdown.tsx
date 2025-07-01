@@ -1,6 +1,7 @@
 import { Link } from '@/i18n/navigation'
 import {
   Avatar,
+  AvatarFallback,
   AvatarImage,
   Button,
   DropdownMenu,
@@ -9,7 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@components/core'
 import { useAuth } from '@context'
@@ -18,32 +18,28 @@ export function ProfileDropdown() {
   const authInfo = useAuth()
   const initials =
     authInfo?.name
-      ?.split('')
+      ?.split(' ')
       ?.map((str) => str[0].toUpperCase())
       ?.join('') || ''
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant='outline' asChild>
+        <Button variant='outline' asChild className='select-none'>
           <Avatar>
             <AvatarImage alt={authInfo?.name || ''} />
-            {/* {initials ? <AvatarFallback>{initials}</AvatarFallback> : null} */}
+            <AvatarFallback>EM</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56' align='start'>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>My account</DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
             <Link href='/favorites'>Favorites</Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
