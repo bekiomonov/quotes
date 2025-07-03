@@ -1,5 +1,3 @@
-'use client'
-
 import type { ThemeProviderProps } from 'next-themes'
 
 import { UserInfo } from '@/schema'
@@ -17,10 +15,10 @@ export interface ProvidersProps {
 
 export function Providers({ children, themeProps, locale, userInfo }: ProvidersProps) {
   return (
-    <NextThemesProvider {...themeProps}>
-      <NextIntlClientProvider locale={locale}>
+    <NextIntlClientProvider locale={locale}>
+      <NextThemesProvider {...themeProps}>
         <AuthProvider userInfo={userInfo}>{children}</AuthProvider>
-      </NextIntlClientProvider>
-    </NextThemesProvider>
+      </NextThemesProvider>
+    </NextIntlClientProvider>
   )
 }

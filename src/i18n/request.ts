@@ -9,7 +9,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
   return {
     locale,
-    messages: (await import(`@assets/messages/${locale}.json`)).default,
+    messages: (await import(`../assets/messages/${locale}.json`)).default,
   }
 })
 

@@ -4,6 +4,7 @@ import { routing } from '@/i18n/routing'
 import '@styles'
 import type { Metadata, Viewport } from 'next'
 import { hasLocale, Locale } from 'next-intl'
+import { setRequestLocale } from 'next-intl/server'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
@@ -31,6 +32,10 @@ export const viewport: Viewport = {
   ],
 }
 
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }))
+}
+
 export default async function RootLayout({
   children,
   params,
@@ -42,6 +47,7 @@ export default async function RootLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound()
   }
+  setRequestLocale(locale)
 
   return (
     <html suppressHydrationWarning lang={locale}>

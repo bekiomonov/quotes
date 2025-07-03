@@ -1,16 +1,7 @@
 import { routing } from '@/i18n/routing'
 import createMiddleware from 'next-intl/middleware'
-import { NextRequest } from 'next/server'
 
-const handleI18nRouting = createMiddleware(routing)
-
-const middleware = async (request: NextRequest) => {
-  const i18nResponse = handleI18nRouting(request)
-
-  return i18nResponse
-}
-
-export default middleware
+export default createMiddleware(routing)
 
 export const config = {
   matcher: [
